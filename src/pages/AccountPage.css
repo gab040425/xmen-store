@@ -1,0 +1,214 @@
+/* =========================
+   ACCOUNT PAGE
+   ========================= */
+
+.account-page {
+  min-height: 100vh;
+  padding: 140px 25px 80px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.account-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.account-container h1 {
+  margin: 10px 0 20px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(55px, 8vw, 85px);
+  line-height: 0.9;
+  letter-spacing: 2px;
+}
+
+.account-text {
+  margin-bottom: 40px;
+  color: #888;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.account-info {
+  border-top: 1px solid #333;
+}
+
+.account-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #333;
+}
+
+.account-info-row span {
+  color: #777;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.account-info-row strong {
+  color: white;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.save-account-button {
+  margin-top: 30px;
+  padding: 13px 28px;
+  border: none;
+  background: #e63946;
+  color: white;
+  font-family: "Bangers", cursive;
+  font-size: 20px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.save-account-button:hover {
+  background: #c92f3b;
+  transform: translateY(-2px);
+}
+
+.danger-zone {
+  margin-top: 80px;
+  padding-top: 30px;
+  border-top: 1px solid #292929;
+}
+
+.danger-zone h2 {
+  margin: 0 0 10px;
+  font-family: "Bangers", cursive;
+  font-size: 32px;
+  letter-spacing: 1px;
+}
+
+.danger-zone p {
+  margin: 0 0 20px;
+  color: #888;
+}
+
+.delete-account-button {
+  padding: 12px 24px;
+  border: 1px solid #e63946;
+  background: transparent;
+  color: #e63946;
+  font-family: "Bangers", cursive;
+  font-size: 18px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.delete-account-button:hover {
+  background: #e63946;
+  color: white;
+}
+
+.account-info-row input {
+  width: 55%;
+  padding: 10px 12px;
+  border: 1px solid #333;
+  background: #181818;
+  color: white;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  font-size: 14px;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.account-info-row input:focus {
+  border-color: #e63946;
+}
+
+.account-info-row:first-child strong,
+.account-info-row:nth-child(2) strong {
+  color: #aaa;
+}
+
+.empty-account-value {
+  color: #666 !important;
+  font-style: italic;
+  transition: color 0.2s ease;
+}
+
+.empty-account-value:hover {
+  color: #e63946 !important;
+}
+
+/* Delete modal */
+.delete-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+}
+
+.delete-modal {
+  width: 90%;
+  max-width: 450px;
+  padding: 40px;
+  background: #151515;
+  border: 1px solid #333;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.delete-modal h2 {
+  margin: 10px 0 20px;
+  font-family: "Bangers", cursive;
+  font-size: 42px;
+  letter-spacing: 1px;
+}
+
+.delete-modal > p:not(.eyebrow) {
+  margin: 0 auto 30px;
+  color: #888;
+  line-height: 1.6;
+}
+
+.delete-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cancel-delete-button,
+.confirm-delete-button {
+  padding: 12px 20px;
+  border: none;
+  font-family: "Bangers", cursive;
+  font-size: 17px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.cancel-delete-button {
+  background: #292929;
+  color: white;
+}
+
+.cancel-delete-button:hover {
+  background: #383838;
+}
+
+.confirm-delete-button {
+  background: #e63946;
+  color: white;
+}
+
+.confirm-delete-button:hover {
+  background: #c92f3b;
+}

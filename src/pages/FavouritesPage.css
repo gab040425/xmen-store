@@ -1,0 +1,59 @@
+/* =========================
+   FAVOURITES PAGE
+   ========================= */
+
+.favourites-page {
+  min-height: 100vh;
+  padding: 120px 6% 60px;
+}
+
+.favourites-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.favourites-container .eyebrow {
+  display: block;
+  margin: 0 0 10px;
+}
+
+.favourites-container h1 {
+  margin: 0 0 40px;
+  font-size: 56px;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+
+.favourites-text {
+  margin-bottom: 25px;
+  color: #888;
+  font-size: 16px;
+}
+
+.favourites-login-button,
+.no-favourites-button {
+  display: inline-block;
+  padding: 12px 22px;
+  background: #e63946;
+  color: white;
+  text-decoration: none;
+  font-family: "Bangers", cursive;
+  font-size: 18px;
+  letter-spacing: 1px;
+  transition: background 0.2s ease;
+}
+
+.favourites-login-button:hover,
+.no-favourites-button:hover {
+  background: #c92f3b;
+}
+
+.no-favourites {
+  padding: 50px 0;
+  text-align: center;
+}
+
+.no-favourites p {
+  margin-bottom: 25px;
+  color: #888;
+}

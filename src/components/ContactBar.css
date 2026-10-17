@@ -1,0 +1,51 @@
+/* =========================
+   CONTACT BAR
+   ========================= */
+
+.contact-bar {
+  padding: 40px 8% 20px;
+  background: #111;
+  border-top: 1px solid #292929;
+}
+
+.contact-content {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding-bottom: 30px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.contact-content h2 {
+  margin: 0;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(45px, 6vw, 75px);
+  line-height: 0.9;
+  letter-spacing: 2px;
+}
+
+.contact-bottom {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 600px) {
+  .contact-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 35px;
+  }
+
+  .contact-bottom {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

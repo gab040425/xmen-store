@@ -1,0 +1,114 @@
+/* =========================
+   SIGN UP PAGE
+   ========================= */
+
+.signup-page {
+  min-height: 100vh;
+  padding: 140px 25px 80px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.signup-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.signup-container h1 {
+  margin: 10px 0 20px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(50px, 8vw, 80px);
+  line-height: 0.9;
+  letter-spacing: 2px;
+}
+
+.signup-text {
+  margin-bottom: 40px;
+  color: #888;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-form label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #aaa;
+}
+
+.signup-form input {
+  width: 100%;
+  height: 48px;
+  margin-bottom: 25px;
+  padding: 0 15px;
+  border: 1px solid #333;
+  border-radius: 5px;
+  background: #151515;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.signup-form input::placeholder {
+  color: #666;
+}
+
+.signup-form input:focus {
+  border-color: #e63946;
+  background: #181818;
+}
+
+.signup-form button {
+  height: 48px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #e63946;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.signup-form button:hover {
+  background: #ff4d5a;
+}
+
+.login-prompt {
+  margin-top: 30px;
+  color: #777;
+  font-size: 14px;
+  text-align: center;
+}
+
+.login-prompt a {
+  color: #e63946;
+  text-decoration: none;
+}
+
+.login-prompt a:hover {
+  text-decoration: underline;
+}
+
+/* Error msg */
+.signup-error {
+  margin: 10px 0 20px;
+  padding: 12px 15px;
+  border: 1px solid #e63946;
+  border-radius: 5px;
+  background: rgba(230, 57, 70, 0.08);
+  color: #e63946;
+  font-size: 13px;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  line-height: 1.4;
+}

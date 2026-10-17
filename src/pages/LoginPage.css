@@ -1,0 +1,114 @@
+/* =========================
+   LOGIN PAGE
+   ========================= */
+
+.login-page {
+  min-height: 100vh;
+  padding: 140px 25px 80px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.login-container h1 {
+  margin: 10px 0 20px;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-size: clamp(55px, 8vw, 85px);
+  line-height: 0.9;
+  letter-spacing: 2px;
+}
+
+.login-text {
+  margin-bottom: 40px;
+  color: #888;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #aaa;
+}
+
+.login-form input {
+  width: 100%;
+  height: 48px;
+  margin-bottom: 25px;
+  padding: 0 15px;
+  border: 1px solid #333;
+  border-radius: 5px;
+  background: #151515;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login-form input::placeholder {
+  color: #666;
+}
+
+.login-form input:focus {
+  border-color: #e63946;
+  background: #181818;
+}
+
+.login-form button {
+  height: 48px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #e63946;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-form button:hover {
+  background: #ff4d5a;
+}
+
+.signup-prompt {
+  margin-top: 30px;
+  color: #777;
+  font-size: 14px;
+  text-align: center;
+}
+
+.signup-prompt a {
+  color: #e63946;
+  text-decoration: none;
+}
+
+.signup-prompt a:hover {
+  text-decoration: underline;
+}
+
+/* Error msg */
+.login-error {
+  margin: 10px 0 20px;
+  padding: 12px 15px;
+  border: 1px solid #e63946;
+  border-radius: 5px;
+  background: rgba(230, 57, 70, 0.08);
+  color: #e63946;
+  font-size: 13px;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  line-height: 1.4;
+}
