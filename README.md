@@ -1,16 +1,63 @@
-# React + Vite
+# X-Men Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fan-made e-commerce web application concept for exploring X-Men merchandise, built with React and Vite.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+X-Men Store is a web development project focused on creating an interactive shopping experience for Marvel's X-Men universe.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Browse X-Men merchandise
+- Explore character-related products
+- Search and discover products
+- Customise the shopping experience
 
-## Expanding the ESLint configuration
+*Update this list to reflect the features currently implemented in the public version.*
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+
+- React
+- JavaScript
+- Vite
+- CSS
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/gab040425/xmen-store.git
+cd xmen-store
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the local URL shown in your terminal.
+
+## Future Improvements
+
+- Expand product customisation
+- Improve the shopping experience
+- Add persistent user preferences and product inventory management
+
+## Author
+
+GitHub: [@gab040425](https://github.com/gab040425)
