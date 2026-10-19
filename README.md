@@ -121,7 +121,8 @@ Replace these placeholders with screenshots captured from the running applicatio
 
 | Homepage | Character detail |
 | --- | --- |
-| Screenshot to add: genuine homepage capture | Screenshot to add: genuine character-page capture |
+| <img width="1915" height="870" alt="image" src="https://github.com/user-attachments/assets/4bc40287-95c5-45ea-8910-bbb9c5a09b9e" />
+ | Screenshot to add: genuine character-page capture |
 
 | Cart and checkout | Order history / confirmation |
 | --- | --- |
