@@ -376,8 +376,8 @@ function CharacterPage({ characters, charactersLoading, charactersError, addToCa
                         type="button"
                         disabled={selectedProduct.stock_quantity === 0}
                         onClick={() => {
-                          const wasAdded = addToCart(selectedProduct)
-                          if (!wasAdded) {
+                          const addResult = addToCart(selectedProduct)
+                          if (addResult === "unauthenticated") {
                             navigate("/login", {
                               state: {
                                 from: {
@@ -389,6 +389,12 @@ function CharacterPage({ characters, charactersLoading, charactersError, addToCa
                             })
                             return
                           }
+
+                          if (addResult !== true) {
+                            setCartMessage("Your cart is still initializing. Your selected figure is ready; please try again in a moment.")
+                            return
+                          }
+
                           setCartMessage(`${selectedProduct.name} added to your cart.`)
                         }}
                       >

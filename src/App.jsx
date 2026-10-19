@@ -242,7 +242,7 @@ function App() {
     ? `${currentInstallationId}:${currentUserId}`
     : null
   const currentUserIdRef = useRef(currentUserId)
-  const isCartAuthenticated = authChecked && isLoggedIn && currentUserId !== null
+  const isCartAuthenticated = isLoggedIn && currentUserId !== null
   const cartIsReady = isCartAuthenticated && currentCartOwnerKey !== null && cartOwnerKey === currentCartOwnerKey
   const visibleCart = cartIsReady ? cart : []
 
@@ -269,7 +269,8 @@ function App() {
   }, [cart, cartIsReady, currentUserId, currentInstallationId])
 
   const addToCart = (product, customization = {}) => {
-    if (!cartIsReady) return false
+    if (!isLoggedIn || currentUserId === null) return "unauthenticated"
+    if (!cartIsReady) return "initializing"
 
     setCart(currentCart => addProductToCart(currentCart, product, customization))
     return true
