@@ -121,12 +121,15 @@ Replace these placeholders with screenshots captured from the running applicatio
 
 | Homepage | Character detail |
 | --- | --- |
-| <img width="1915" height="870" alt="image" src="https://github.com/user-attachments/assets/4bc40287-95c5-45ea-8910-bbb9c5a09b9e" />
- | Screenshot to add: genuine character-page capture |
+| <img width="1917" height="860" alt="image" src="https://github.com/user-attachments/assets/4bc40287-95c5-45ea-8910-bbb9c5a09b9e" />
+ | <img width="1917" height="860" alt="image" src="https://github.com/user-attachments/assets/0a002029-8763-424d-b10f-060cf6815580" />
+ |
 
 | Cart and checkout | Order history / confirmation |
 | --- | --- |
-| Screenshot to add: genuine cart or checkout capture | Screenshot to add: genuine order capture |
+| <img width="1917" height="860" alt="image" src="https://github.com/user-attachments/assets/07ee229b-2ded-4ba0-8b7a-25e8d3627b98" />
+ | <img width="1917" height="860" alt="image" src="https://github.com/user-attachments/assets/0b76cb45-4596-4910-aee5-6368373be547" />
+e |
 
 ## Development commands
 
