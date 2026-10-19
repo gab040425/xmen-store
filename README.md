@@ -117,19 +117,21 @@ Use only demo data when testing. Checkout writes orders and reduces product stoc
 
 ## Screenshots
 
-Replace these placeholders with screenshots captured from the running application. No sample or generated screenshots are included.
+| Homepage |
+| --- |
+| <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/4bc40287-95c5-45ea-8910-bbb9c5a09b9e" />|
 
-| Homepage | Character detail |
-| --- | --- |
-| <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/4bc40287-95c5-45ea-8910-bbb9c5a09b9e" />
- | <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/0a002029-8763-424d-b10f-060cf6815580" />
- |
+| Character detail |
+| --- |
+| <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/0a002029-8763-424d-b10f-060cf6815580" />
 
-| Cart and checkout | Order history / confirmation |
-| --- | --- |
+| Cart and checkout |
+| --- |
 | <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/07ee229b-2ded-4ba0-8b7a-25e8d3627b98" />
- | <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/0b76cb45-4596-4910-aee5-6368373be547" />
-e |
+
+| Order history / confirmation |
+| --- |
+| <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/0b76cb45-4596-4910-aee5-6368373be547" /> |
 
 ## Development commands
 
