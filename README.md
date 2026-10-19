@@ -1,6 +1,7 @@
 # X-Men Store
 
 A fan-made e-commerce web application concept for exploring X-Men merchandise, built with React and Vite.
+This is my first attempt of building a website with a backend.
 
 ## Overview
 
