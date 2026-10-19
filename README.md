@@ -1,6 +1,6 @@
 # X-Men Store
 
-A local portfolio demo for browsing an X-Men collectible catalogue. The project combines a React storefront with an Express API and a SQLite database, including account sessions, favourites, a user-specific cart, and test-order checkout.
+This is my first attempt to create a website with a backend server connected. It is a local demo for browsing an X-Men collectible catalogue. The project combines a React storefront with an Express API and a SQLite database, including account sessions, favourites, a user-specific cart, and test-order checkout.
 
 > This is a locally run learning and portfolio project. It is not a deployed production store and checkout does not take payment.
 
