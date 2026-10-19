@@ -12,7 +12,7 @@
 
 .orders-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 850px;
 }
 
 .orders-container h1 {
@@ -28,6 +28,96 @@
   color: #888;
   font-family: "Trebuchet MS", Arial, sans-serif;
   line-height: 1.6;
+}
+
+.orders-list {
+  display: grid;
+  gap: 14px;
+}
+
+.order-card {
+  padding: 22px;
+  border: 1px solid #292929;
+  background: #151515;
+}
+
+.order-card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.order-card-heading h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 20px;
+}
+
+.order-status {
+  padding: 6px 10px;
+  border: 1px solid #454545;
+  border-radius: 3px;
+  background: #202020;
+  color: #d0d0d0;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.order-status--positive {
+  border-color: #315b3a;
+  background: #14251a;
+  color: #a8e6b0;
+}
+
+.order-status--negative {
+  border-color: #71353a;
+  background: #2a1719;
+  color: #ff9ca2;
+}
+
+.order-status--neutral {
+  border-color: #454545;
+  background: #202020;
+  color: #d0d0d0;
+}
+
+.order-card > p {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 10px 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.order-card > p strong {
+  color: #eee;
+  font-weight: 500;
+  text-align: right;
+}
+
+.order-detail-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: #ff858d;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.6px;
+  text-decoration: none;
+}
+
+.order-detail-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.orders-error-state {
+  padding: 22px;
+  border: 1px solid #553036;
+  background: #191313;
 }
 
 .continue-shopping-button {

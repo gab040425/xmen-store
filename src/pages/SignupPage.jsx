@@ -56,6 +56,7 @@ function SignupPage({ setIsLoggedIn, setCurrentUser }) {
 
             fetch("http://localhost:3000/api/register", {
               method: "POST",
+              credentials: "include",
               headers: {
                 "Content-Type": "application/json"
               },
@@ -68,16 +69,17 @@ function SignupPage({ setIsLoggedIn, setCurrentUser }) {
               .then(response => response.json())
               .then(data => {
                 console.log("Signup response:", data)
-                if (data.message === "Registration successful!") {
-                  setCurrentUser({
-                    name: data.name,
-                    email: data.email
-                  })
+                if (
+                  data.message === "Registration successful!" &&
+                  Number.isSafeInteger(data.user?.id) &&
+                  typeof data.user.installationId === "string"
+                ) {
+                  setCurrentUser(data.user)
 
                   setIsLoggedIn(true)
                   navigate("/")
                 } else {
-                  setError(data.message)
+                  setError(data.message || "Unable to create your account.")
                 }
               })
               .catch(() => {

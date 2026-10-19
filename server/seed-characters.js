@@ -1,6 +1,9 @@
+/* global process */
+
+import "dotenv/config"
 import Database from "better-sqlite3"
 
-const db = new Database("server/xmen-shop.db")
+const db = new Database(process.env.DB_PATH || "server/xmen-shop.db")
 
 const characters = [
   {

@@ -7,7 +7,7 @@
 */
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import "./LoginPage.css"
 
 function LoginPage({ setIsLoggedIn, setCurrentUser }) {
@@ -16,6 +16,17 @@ function LoginPage({ setIsLoggedIn, setCurrentUser }) {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const requestedDestination = location.state?.from
+  const destination = typeof requestedDestination === "string"
+    ? requestedDestination
+    : requestedDestination
+      ? `${requestedDestination.pathname || "/"}${requestedDestination.search || ""}${requestedDestination.hash || ""}`
+      : "/"
+  const safeDestination = destination.startsWith("/") && !destination.startsWith("//")
+    ? destination
+    : "/"
 
   return (
     <main className="login-page">
@@ -59,7 +70,7 @@ function LoginPage({ setIsLoggedIn, setCurrentUser }) {
                   if (data.message === "Login successful!") {
                     setCurrentUser(data.user)
                     setIsLoggedIn(true)
-                    navigate("/")
+                    navigate(safeDestination, { replace: true })
                   } else {
                     setError(data.message)
                   }

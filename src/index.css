@@ -1,12 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
 
 :root {
+  color-scheme: dark;
+
+  --color-background: #08090c;
+  --color-surface: #15181e;
+  --color-surface-raised: #1d222a;
+  --color-surface-hover: #292f39;
+  --color-border: #353d48;
+  --color-border-strong: #4a5562;
+  --color-text: #f4f3f2;
+  --color-text-soft: #d5d6d9;
+  --color-muted: #b0b4bd;
+  --color-muted-subtle: #969da8;
+  --color-crimson: #98162f;
+  --color-crimson-hover: #c32645;
+  --color-crimson-active: #701022;
+  --color-crimson-glow: rgba(152, 22, 47, 0.36);
+  --color-focus-ring: #ff7187;
+  --color-nav-glass: rgba(8, 9, 12, 0.96);
+  --gradient-panel: linear-gradient(145deg, #202630 0%, #15181e 72%);
+  --gradient-panel-raised: linear-gradient(145deg, #282f39 0%, #1a1e25 80%);
+  --gradient-crimson: linear-gradient(135deg, #b31f3e 0%, #7e1229 100%);
+  --gradient-crimson-hover: linear-gradient(135deg, #d03250 0%, #98162f 100%);
+  --shadow-card: 0 16px 38px rgba(0, 0, 0, 0.42);
+  --shadow-card-hover: 0 24px 48px rgba(0, 0, 0, 0.55), 0 0 24px rgba(152, 22, 47, 0.2);
+  --shadow-crimson: 0 10px 28px rgba(112, 16, 34, 0.32);
+  --color-success: #a8ddb1;
+  --color-danger: #ff9ca7;
+  --color-danger-surface: #28151a;
+
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: #f5f5f5;
-  background: #0a0a0a;
+  color: var(--color-text);
+  background: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,11 +47,315 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring) !important;
+  outline-offset: 3px;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
+}
+
+/* Shared visual treatment for the existing commerce and account surfaces. */
+
+:root :is(
+  .cart-item,
+  .checkout-review,
+  .checkout-form,
+  .checkout-empty-state,
+  .no-favourites,
+  .no-results,
+  .order-card,
+  .order-confirmation-summary,
+  .order-confirmation-items,
+  .order-confirmation-state,
+  .delete-modal
+) {
+  border-color: var(--color-border-strong);
+  background: var(--gradient-panel);
+  box-shadow: var(--shadow-card);
+}
+
+:root :is(
+  .search-box input,
+  .nav-search input,
+  .account-info-row input,
+  .login-form input,
+  .signup-form input,
+  .checkout-form input
+) {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+:root :is(
+  .search-box input,
+  .nav-search input,
+  .account-info-row input,
+  .login-form input,
+  .signup-form input,
+  .checkout-form input
+):focus {
+  border-color: var(--color-crimson-hover);
+  background: var(--color-surface-raised);
+  box-shadow: 0 0 0 1px var(--color-crimson), 0 0 18px rgba(152, 22, 47, 0.2);
+}
+
+:root :is(
+  .save-account-button,
+  .confirm-delete-button,
+  .login-form button,
+  .signup-form button,
+  .favourites-login-button,
+  .no-favourites-button,
+  .cart-continue-button,
+  .continue-shopping-button,
+  .checkout-submit-button,
+  .checkout-primary-link,
+  .order-confirmation-button
+):not(:disabled) {
+  border-color: var(--color-crimson);
+  border-radius: 4px;
+  background: var(--gradient-crimson);
+  box-shadow: var(--shadow-crimson);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+:root :is(
+  .save-account-button,
+  .confirm-delete-button,
+  .login-form button,
+  .signup-form button,
+  .favourites-login-button,
+  .no-favourites-button,
+  .cart-continue-button,
+  .continue-shopping-button,
+  .checkout-submit-button,
+  .checkout-primary-link,
+  .order-confirmation-button
+):hover:not(:disabled) {
+  border-color: var(--color-crimson-hover);
+  background: var(--gradient-crimson-hover);
+  box-shadow: 0 13px 32px rgba(112, 16, 34, 0.42);
+  transform: translateY(-1px);
+}
+
+:root :is(
+  .save-account-button,
+  .confirm-delete-button,
+  .login-form button,
+  .signup-form button,
+  .favourites-login-button,
+  .no-favourites-button,
+  .cart-continue-button,
+  .continue-shopping-button,
+  .checkout-submit-button,
+  .checkout-primary-link,
+  .order-confirmation-button
+):active:not(:disabled) {
+  background: var(--color-crimson-active);
+  transform: translateY(0);
+}
+
+:root :is(
+  .account-container h1,
+  .cart-container h1,
+  .checkout-container > h1,
+  .favourites-container h1,
+  .login-container h1,
+  .orders-container h1,
+  .order-confirmation-container > h1,
+  .search-results-heading h1,
+  .signup-container h1
+) {
+  text-shadow: 0 7px 28px rgba(0, 0, 0, 0.55);
+}
+
+:root :is(
+  .account-text,
+  .cart-text,
+  .checkout-item p,
+  .checkout-price-note,
+  .checkout-test-notice,
+  .contact-bottom,
+  .favourites-text,
+  .login-text,
+  .orders-text,
+  .order-confirmation-item p,
+  .order-confirmation-message,
+  .order-confirmation-state p,
+  .search-results-count,
+  .signup-text
+) {
+  color: var(--color-muted);
+}
+
+:root :is(
+  .account-info,
+  .account-info-row,
+  .cart-summary,
+  .checkout-item,
+  .figure-section,
+  .character-lore
+) {
+  border-color: var(--color-border);
+}
+
+:root :is(
+  .account-info-row span,
+  .checkout-form label span,
+  .empty-account-value,
+  .cart-quantity-control button:disabled
+) {
+  color: var(--color-muted-subtle);
+}
+
+:root :is(
+  .cart-quantity-control,
+  .account-info-row input,
+  .checkout-form input
+) {
+  border-radius: 4px;
+}
+
+:root .cart-quantity-control {
+  border-color: var(--color-border-strong);
+  background: var(--color-background);
+}
+
+:root .cart-quantity-control button:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+}
+
+:root :is(.cart-remove-button, .cart-item-variant, .order-detail-link) {
+  color: var(--color-crimson-hover);
+}
+
+:root :is(.cart-remove-button, .order-detail-link):hover {
+  color: #ff788d;
+}
+
+:root :is(.checkout-attempt-note, .checkout-attempt-warning, .order-test-notice) {
+  border-left-color: var(--color-crimson-hover);
+  background: linear-gradient(100deg, var(--color-danger-surface), rgba(40, 21, 26, 0.45));
+}
+
+:root :is(.login-error, .signup-error, .checkout-error, .orders-error-state) {
+  border-color: rgba(195, 38, 69, 0.72);
+  background: linear-gradient(145deg, var(--color-danger-surface), rgba(21, 24, 30, 0.92));
+  color: var(--color-danger);
+}
+
+:root :is(.login-form input, .signup-form input, .checkout-form input, .nav-search input, .search-box input)::placeholder {
+  color: var(--color-muted-subtle);
+}
+
+:root :is(.delete-account-button, .checkout-reset-button, .no-results-button) {
+  border-color: var(--color-crimson);
+  border-radius: 4px;
+  color: #ff7588;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:root :is(.delete-account-button, .checkout-reset-button, .no-results-button):hover:not(:disabled) {
+  border-color: var(--color-crimson-hover);
+  background: var(--gradient-crimson);
+  color: var(--color-text);
+  box-shadow: var(--shadow-crimson);
+}
+
+:root .cancel-delete-button {
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface-hover);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+:root .cancel-delete-button:hover {
+  border-color: var(--color-muted-subtle);
+  background: #343b45;
+}
+
+:root :is(
+  .account-page,
+  .cart-page,
+  .character-page,
+  .checkout-page,
+  .favourites-page,
+  .login-page,
+  .orders-page,
+  .order-confirmation-page,
+  .search-results-page,
+  .signup-page
+) {
+  background-image: radial-gradient(ellipse at 88% 0%, rgba(152, 22, 47, 0.16), transparent 36%);
+}
+
+:root :is(
+  .save-account-button,
+  .confirm-delete-button,
+  .login-form button,
+  .signup-form button,
+  .favourites-login-button,
+  .no-favourites-button,
+  .cart-continue-button,
+  .continue-shopping-button,
+  .checkout-submit-button,
+  .checkout-primary-link,
+  .order-confirmation-button
+):disabled {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-hover);
+  box-shadow: none;
+  color: var(--color-muted-subtle);
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+:root .product-in-stock {
+  color: var(--color-success);
+}
+
+:root .product-out-of-stock {
+  color: var(--color-danger);
+}
+
+:root .cart-add-message {
+  color: var(--color-success);
+}
+
+:root .empty-account-value {
+  color: var(--color-muted-subtle) !important;
+}
+
+:root .contact-bar {
+  border-top-color: var(--color-border);
+  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-background) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root :is(
+    .save-account-button,
+    .confirm-delete-button,
+    .login-form button,
+    .signup-form button,
+    .favourites-login-button,
+    .no-favourites-button,
+    .cart-continue-button,
+    .continue-shopping-button,
+    .checkout-submit-button,
+    .checkout-primary-link,
+    .order-confirmation-button
+  ) {
+    transition-duration: 0.01ms;
+  }
 }
 
 /*

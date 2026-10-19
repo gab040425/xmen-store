@@ -11,11 +11,11 @@
 */
 
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import "./Navbar.css"
 
 
-function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser }) {
+function Navbar({ characters, cartCount, isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser }) {
 
   /* =========================
      SEARCH STATE
@@ -30,6 +30,7 @@ function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrent
 
   const [searchTerm, setSearchTerm] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const location = useLocation()
 
   /*
     useNavigate allows this component to change the
@@ -302,9 +303,6 @@ function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrent
           Search
         </button>
 
-      </div>
-
-
       {/* =========================
           SEARCH SUGGESTIONS
           =========================
@@ -338,7 +336,12 @@ function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrent
                     Go directly to the selected
                     character's page.
                   */
-                  navigate(`/characters/${character.id}`)
+                  navigate(`/characters/${character.id}`, {
+                    state: {
+                      from: `${location.pathname}${location.search}${location.hash}`,
+                      returnToHistory: true,
+                    },
+                  })
                 }}
               >
 
@@ -365,6 +368,8 @@ function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrent
         </div>
       )}
 
+      </div>
+
 
       {/* Navigation links */}
       <div className="nav-links">
@@ -375,7 +380,7 @@ function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrent
 
         <div className="account-menu">
 
-        <Link to="/login">
+        <Link to={isLoggedIn ? "/account" : "/login"}>
           {isLoggedIn ? currentUser.name : "Account"}
         </Link>
 
@@ -413,9 +418,21 @@ function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrent
 
       </div>
 
-        <Link to="/cart">Cart</Link>
-
       </div>
+
+      <Link
+        to="/cart"
+        className="navbar-cart"
+        aria-label={`Shopping cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 1.9-1.4L22 8H6" />
+          <circle cx="10" cy="20" r="1" />
+          <circle cx="18" cy="20" r="1" />
+        </svg>
+        <span>Cart</span>
+        <span className="navbar-cart-count" aria-hidden="true">{cartCount}</span>
+      </Link>
 
     </nav>
   )

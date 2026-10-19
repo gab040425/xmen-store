@@ -14,7 +14,7 @@
  */
 
 import { useState, useEffect } from "react"
-import { useParams, Link, useLocation } from "react-router-dom"
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom"
 import { getImage } from "../data/characters"
 import { loadProducts } from "../data/products"
 import ContactBar from "../components/ContactBar"
@@ -32,7 +32,7 @@ const formatPrice = (priceCents) =>
   }).format(priceCents / 100)
 
 
-function CharacterPage({ characters, charactersLoading, charactersError }) {
+function CharacterPage({ characters, charactersLoading, charactersError, addToCart }) {
 
   /* =========================
      URL INFORMATION
@@ -67,6 +67,7 @@ function CharacterPage({ characters, charactersLoading, charactersError }) {
   */
 
   const location = useLocation()
+  const navigate = useNavigate()
 
 
   /* =========================
@@ -94,6 +95,7 @@ function CharacterPage({ characters, charactersLoading, charactersError }) {
     error: "",
   })
   const [selectedProductId, setSelectedProductId] = useState(null)
+  const [cartMessage, setCartMessage] = useState("")
 
   useEffect(() => {
     const controller = new AbortController()
@@ -235,6 +237,19 @@ function CharacterPage({ characters, charactersLoading, charactersError }) {
         <Link
           to={location.state?.from || "/"}
           className="back-button"
+          onClick={(event) => {
+            if (
+              location.state?.returnToHistory &&
+              event.button === 0 &&
+              !event.metaKey &&
+              !event.ctrlKey &&
+              !event.shiftKey &&
+              !event.altKey
+            ) {
+              event.preventDefault()
+              navigate(-1)
+            }
+          }}
         >
           ← Back to Mutants
         </Link>
@@ -336,25 +351,51 @@ function CharacterPage({ characters, charactersLoading, charactersError }) {
                       type="button"
                       className={`product-option ${selectedProductId === product.id ? "selected" : ""}`}
                       aria-pressed={selectedProductId === product.id}
-                      onClick={() => setSelectedProductId(product.id)}
+                      onClick={() => {
+                        setSelectedProductId(product.id)
+                        setCartMessage("")
+                      }}
                     >
-                      <img src={product.image_url} alt="" loading="lazy" />
                       <span className="product-option-details">
                         <strong>{product.name}</strong>
                         <span>{productTypeLabels[product.product_type] || product.product_type}</span>
                         <span>{formatPrice(product.price_cents)}</span>
-                        <span className={product.stock_quantity > 0 ? "product-in-stock" : "product-out-of-stock"}>
-                          {product.stock_quantity > 0
-                            ? `In stock (${product.stock_quantity} available)`
-                            : "Out of stock"}
-                        </span>
+                        {product.stock_quantity === 0 && (
+                          <span className="product-out-of-stock">Out of stock</span>
+                        )}
                       </span>
                     </button>
                   ))}
                   {selectedProduct && (
-                    <p className="selected-product-message" role="status">
-                      Selected: {selectedProduct.name}
-                    </p>
+                    <div className="product-purchase-controls">
+                      <p className="selected-product-message" role="status">
+                        Selected: {selectedProduct.name}
+                      </p>
+                      <button
+                        className="add-to-cart-button"
+                        type="button"
+                        disabled={selectedProduct.stock_quantity === 0}
+                        onClick={() => {
+                          const wasAdded = addToCart(selectedProduct)
+                          if (!wasAdded) {
+                            navigate("/login", {
+                              state: {
+                                from: {
+                                  pathname: location.pathname,
+                                  search: location.search,
+                                  hash: location.hash,
+                                },
+                              },
+                            })
+                            return
+                          }
+                          setCartMessage(`${selectedProduct.name} added to your cart.`)
+                        }}
+                      >
+                        {selectedProduct.stock_quantity === 0 ? "OUT OF STOCK" : "ADD TO CART"}
+                      </button>
+                      {cartMessage && <p className="cart-add-message" role="status">{cartMessage}</p>}
+                    </div>
                   )}
                 </div>
               )}

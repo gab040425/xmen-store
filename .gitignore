@@ -33,6 +33,13 @@ dist-ssr
 *.sqlite
 *.sqlite3
 *.db-journal
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
+backups/
 
 # Python artifacts, if applicable
 __pycache__/

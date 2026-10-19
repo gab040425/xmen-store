@@ -20,11 +20,21 @@ import {
   Routes,
   Route,
   Link,
-  useLocation
+  useLocation,
+  useNavigationType,
+  Navigate
 } from "react-router-dom"
-import { useLayoutEffect, useEffect, useState } from "react"
+import { useLayoutEffect, useEffect, useRef, useState } from "react"
 
 import { getImage, loadCharacters } from './data/characters'
+import {
+  addProductToCart,
+  getCartItemCount,
+  readCart,
+  removeCartItem,
+  setCartItemQuantity,
+  writeCart,
+} from './data/cart'
 import CharacterPage from "./pages/CharacterPage"
 import SearchResults from "./pages/SearchResults"
 import LoginPage from "./pages/LoginPage"
@@ -32,7 +42,9 @@ import SignupPage from './pages/SignupPage'
 import FavouritesPage from './pages/FavouritesPage'
 import AccountPage from "./pages/AccountPage"
 import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
 import OrdersPage from "./pages/OrdersPage"
+import OrderConfirmationPage from "./pages/OrderConfirmationPage"
 
 import Navbar from "./components/Navbar"
 import ContactBar from "./components/ContactBar"
@@ -92,6 +104,7 @@ function HomePage({ characters, charactersLoading, charactersError }) {
           {characters.map((character) => (
             <Link
               to={`/characters/${character.id}`}
+              state={{ from: "/", returnToHistory: true }}
               className="character-card"
               key={character.id}
             >
@@ -131,15 +144,71 @@ function HomePage({ characters, charactersLoading, charactersError }) {
 */
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const location = useLocation()
+  const navigationType = useNavigationType()
+  const homepagePositions = useRef(new Map())
 
   useLayoutEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
+    const positions = homepagePositions.current
+    if (location.pathname === "/" && navigationType === "POP" && positions.has(location.key)) {
+      const { x, y } = positions.get(location.key)
+      window.scrollTo(x, y)
+    } else {
+      window.scrollTo(0, 0)
+    }
+
+    return () => {
+      if (location.pathname === "/") {
+        positions.set(location.key, { x: window.scrollX, y: window.scrollY })
+      }
+    }
+  }, [location.key, location.pathname, navigationType])
 
   return null
 }
 // Returns null because it doesnt return anything, just perform an action
+
+function AuthenticatedCart({ authChecked, isLoggedIn, currentUser, ...cartProps }) {
+  const location = useLocation()
+
+  if (!authChecked) {
+    return <main className="cart-page"><p role="status">Checking your login...</p></main>
+  }
+
+  if (!isLoggedIn || currentUser?.id == null) {
+    return <Navigate to="/login" replace state={{ from: location }} />
+  }
+
+  return <CartPage {...cartProps} />
+}
+
+function AuthenticatedCheckout({ authChecked, isLoggedIn, currentUser, ...checkoutProps }) {
+  const location = useLocation()
+
+  if (!authChecked) {
+    return <main className="cart-page"><p role="status">Checking your login...</p></main>
+  }
+
+  if (!isLoggedIn || currentUser?.id == null) {
+    return <Navigate to="/login" replace state={{ from: location }} />
+  }
+
+  return <CheckoutPage {...checkoutProps} currentUser={currentUser} />
+}
+
+function AuthenticatedPage({ authChecked, isLoggedIn, currentUser, children }) {
+  const location = useLocation()
+
+  if (!authChecked) {
+    return <main className="orders-page"><p role="status">Checking your login...</p></main>
+  }
+
+  if (!isLoggedIn || currentUser?.id == null) {
+    return <Navigate to="/login" replace state={{ from: location }} />
+  }
+
+  return children
+}
 
 /* =========================
    MAIN APP
@@ -161,9 +230,67 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
+  const [authChecked, setAuthChecked] = useState(false)
   const [characters, setCharacters] = useState([])
   const [charactersLoading, setCharactersLoading] = useState(true)
   const [charactersError, setCharactersError] = useState("")
+  const [cart, setCart] = useState([])
+  const [cartOwnerKey, setCartOwnerKey] = useState(null)
+  const currentUserId = currentUser?.id == null ? null : String(currentUser.id)
+  const currentInstallationId = currentUser?.installationId ?? null
+  const currentCartOwnerKey = currentUserId !== null && typeof currentInstallationId === "string"
+    ? `${currentInstallationId}:${currentUserId}`
+    : null
+  const currentUserIdRef = useRef(currentUserId)
+  const isCartAuthenticated = authChecked && isLoggedIn && currentUserId !== null
+  const cartIsReady = isCartAuthenticated && currentCartOwnerKey !== null && cartOwnerKey === currentCartOwnerKey
+  const visibleCart = cartIsReady ? cart : []
+
+  const updateCurrentUser = (user) => {
+    setCurrentUser(user)
+
+    const userId = user?.id == null ? null : String(user.id)
+    const installationId = typeof user?.installationId === "string" ? user.installationId : null
+    const ownerKey = userId !== null && installationId !== null
+      ? `${installationId}:${userId}`
+      : null
+    setCart(ownerKey === null ? [] : readCart(userId, installationId))
+    setCartOwnerKey(ownerKey)
+  }
+
+  useLayoutEffect(() => {
+    currentUserIdRef.current = currentUserId
+  }, [currentUserId])
+
+  useEffect(() => {
+    if (cartIsReady) {
+      writeCart(cart, currentUserId, currentInstallationId)
+    }
+  }, [cart, cartIsReady, currentUserId, currentInstallationId])
+
+  const addToCart = (product, customization = {}) => {
+    if (!cartIsReady) return false
+
+    setCart(currentCart => addProductToCart(currentCart, product, customization))
+    return true
+  }
+
+  const changeCartItemQuantity = (key, quantity) => {
+    if (!cartIsReady) return
+    setCart(currentCart => setCartItemQuantity(currentCart, key, quantity))
+  }
+
+  const deleteCartItem = (key) => {
+    if (!cartIsReady) return
+    setCart(currentCart => removeCartItem(currentCart, key))
+  }
+
+  const clearCartAfterOrder = (orderUserId) => {
+    if (orderUserId == null || currentInstallationId === null) return
+    const orderOwnerId = String(orderUserId)
+    writeCart([], orderOwnerId, currentInstallationId)
+    if (currentUserIdRef.current === orderOwnerId) setCart([])
+  }
 
   useEffect(() => {
     let isCurrent = true
@@ -188,13 +315,14 @@ function App() {
         return response.json()
       })
       .then(data => {
-        setCurrentUser(data.user)
+        updateCurrentUser(data.user)
         setIsLoggedIn(true)
       })
       .catch(() => {
-        setCurrentUser(null)
+        updateCurrentUser(null)
         setIsLoggedIn(false)
       })
+      .finally(() => setAuthChecked(true))
   }, [])
 
 
@@ -216,10 +344,11 @@ function App() {
     <BrowserRouter>
       <Navbar
         characters={characters}
+        cartCount={getCartItemCount(visibleCart)}
         isLoggedIn={isLoggedIn}
         currentUser={currentUser}
         setIsLoggedIn={setIsLoggedIn}
-        setCurrentUser={setCurrentUser}
+        setCurrentUser={updateCurrentUser}
       />
 
       <ScrollToTop />
@@ -240,7 +369,7 @@ function App() {
           element={
             <LoginPage
               setIsLoggedIn={setIsLoggedIn}
-              setCurrentUser={setCurrentUser}
+              setCurrentUser={updateCurrentUser}
             />
           }
         />
@@ -251,7 +380,7 @@ function App() {
           element={
             <SignupPage
               setIsLoggedIn={setIsLoggedIn}
-              setCurrentUser={setCurrentUser}
+              setCurrentUser={updateCurrentUser}
             />
           }
         />
@@ -264,25 +393,66 @@ function App() {
               key={currentUser?.id ?? currentUser?.email ?? "no-user"}
               currentUser={currentUser}
               setIsLoggedIn={setIsLoggedIn}
-              setCurrentUser={setCurrentUser}
+              setCurrentUser={updateCurrentUser}
             />
           }
         />
 
-        {/* Order Page */}
-        <Route path="/orders" element={<OrdersPage />} />
+        {/* Order History and Confirmation Pages */}
+        <Route
+          path="/orders"
+          element={
+            <AuthenticatedPage authChecked={authChecked} isLoggedIn={isLoggedIn} currentUser={currentUser}>
+              <OrdersPage />
+            </AuthenticatedPage>
+          }
+        />
+        <Route
+          path="/orders/:orderId"
+          element={
+            <AuthenticatedPage authChecked={authChecked} isLoggedIn={isLoggedIn} currentUser={currentUser}>
+              <OrderConfirmationPage currentUser={currentUser} />
+            </AuthenticatedPage>
+          }
+        />
 
         {/* Favourites Page */}
         <Route path="/favourites" element={<FavouritesPage characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} />} />
 
         {/* Cart Page */}
-        <Route path="/cart" element={<CartPage />} />
+        <Route
+          path="/cart"
+          element={
+            <AuthenticatedCart
+              authChecked={authChecked}
+              isLoggedIn={isLoggedIn}
+              currentUser={currentUser}
+              cart={visibleCart}
+              setItemQuantity={changeCartItemQuantity}
+              removeItem={deleteCartItem}
+            />
+          }
+        />
+
+        {/* Checkout Page */}
+        <Route
+          path="/checkout"
+          element={
+            <AuthenticatedCheckout
+              authChecked={authChecked}
+              isLoggedIn={isLoggedIn}
+              currentUser={currentUser}
+              cart={visibleCart}
+              onOrderSuccess={clearCartAfterOrder}
+            />
+          }
+        />
 
         {/* Character page */}
         {/* :id is a dynamic URL parameter */}
         <Route
           path="/characters/:id"
-          element={<CharacterPage characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} />}
+          element={<CharacterPage characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} addToCart={addToCart} />}
         />
       </Routes>
     </BrowserRouter>
