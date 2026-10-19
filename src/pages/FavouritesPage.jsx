@@ -10,12 +10,12 @@
 
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import characters, { getImage } from "../data/characters"
+import { getImage } from "../data/characters"
 import "./FavouritesPage.css"
 
 import ContactBar from "../components/ContactBar"
 
-function FavouritesPage() {
+function FavouritesPage({ characters, charactersLoading, charactersError }) {
   const [favourites, setFavourites] = useState([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -67,6 +67,10 @@ function FavouritesPage() {
                 LOG IN
               </Link>
             </>
+          ) : charactersLoading ? (
+            <p role="status">Loading characters…</p>
+          ) : charactersError ? (
+            <p role="alert">{charactersError}</p>
           ) : favouriteCharacters.length > 0 ? (
             <div className="character-grid">
               {favouriteCharacters.map((character) => (

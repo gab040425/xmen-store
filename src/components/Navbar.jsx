@@ -12,11 +12,10 @@
 
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import characters from "../data/characters"
 import "./Navbar.css"
 
 
-function Navbar({ isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser }) {
+function Navbar({ characters, isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser }) {
 
   /* =========================
      SEARCH STATE

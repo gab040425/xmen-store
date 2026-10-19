@@ -15,11 +15,24 @@
 
 import { useState, useEffect } from "react"
 import { useParams, Link, useLocation } from "react-router-dom"
-import characters, { getImage } from "../data/characters"
+import { getImage } from "../data/characters"
+import { loadProducts } from "../data/products"
 import ContactBar from "../components/ContactBar"
 
+const productTypeLabels = {
+  funko_pop: "Funko Pop",
+  mini_figurine: "Mini Figurine",
+  scale_1_6: "1:6 Scale Figurine",
+}
 
-function CharacterPage() {
+const formatPrice = (priceCents) =>
+  new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+  }).format(priceCents / 100)
+
+
+function CharacterPage({ characters, charactersLoading, charactersError }) {
 
   /* =========================
      URL INFORMATION
@@ -74,6 +87,35 @@ function CharacterPage() {
 
   const [openAbility, setOpenAbility] = useState(null)
   const [isFavourite, setIsFavourite] = useState(false)
+  const [productData, setProductData] = useState({
+    characterId: null,
+    products: [],
+    loading: true,
+    error: "",
+  })
+  const [selectedProductId, setSelectedProductId] = useState(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    loadProducts(id, { signal: controller.signal })
+      .then(products => {
+        setProductData({ characterId: id, products, loading: false, error: "" })
+        setSelectedProductId(null)
+      })
+      .catch(error => {
+        if (error.name !== "AbortError") {
+          setProductData({
+            characterId: id,
+            products: [],
+            loading: false,
+            error: error.message || "Unable to load products.",
+          })
+        }
+      })
+
+    return () => controller.abort()
+  }, [id])
 
   useEffect(() => {
     fetch("http://localhost:3000/api/favourites", {
@@ -115,6 +157,13 @@ function CharacterPage() {
   const character = characters.find(
     (character) => character.id === id
   )
+  const hasCurrentProductData = productData.characterId === id
+  const products = hasCurrentProductData ? productData.products : []
+  const productsLoading = !hasCurrentProductData || productData.loading
+  const productsError = hasCurrentProductData ? productData.error : ""
+  const selectedProduct = products.find(
+    product => product.id === selectedProductId
+  )
 
 
   /* =========================
@@ -127,6 +176,14 @@ function CharacterPage() {
      In that situation, show an error message instead
      of trying to display missing character information.
   */
+
+  if (charactersLoading) {
+    return <main className="character-page"><p role="status">Loading character…</p></main>
+  }
+
+  if (charactersError) {
+    return <main className="character-page"><p role="alert">{charactersError}</p><Link to="/">Back to Mutants</Link></main>
+  }
 
   if (!character) {
     return (
@@ -263,13 +320,44 @@ function CharacterPage() {
 
               <h2>CHOOSE YOUR FIGURE</h2>
 
-              <div className="figure-options">
-
-                <button>Funko Pop</button>
-                <button>Mini Figurine</button>
-                <button>1:6 Scale</button>
-
-              </div>
+              {productsLoading ? (
+                <p role="status">Loading products…</p>
+              ) : productsError ? (
+                <p role="alert">{productsError}</p>
+              ) : products.length === 0 ? (
+                <p className="empty-product-message">
+                  No figures are available for this character yet. Please check back later.
+                </p>
+              ) : (
+                <div className="figure-options">
+                  {products.map(product => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      className={`product-option ${selectedProductId === product.id ? "selected" : ""}`}
+                      aria-pressed={selectedProductId === product.id}
+                      onClick={() => setSelectedProductId(product.id)}
+                    >
+                      <img src={product.image_url} alt="" loading="lazy" />
+                      <span className="product-option-details">
+                        <strong>{product.name}</strong>
+                        <span>{productTypeLabels[product.product_type] || product.product_type}</span>
+                        <span>{formatPrice(product.price_cents)}</span>
+                        <span className={product.stock_quantity > 0 ? "product-in-stock" : "product-out-of-stock"}>
+                          {product.stock_quantity > 0
+                            ? `In stock (${product.stock_quantity} available)`
+                            : "Out of stock"}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                  {selectedProduct && (
+                    <p className="selected-product-message" role="status">
+                      Selected: {selectedProduct.name}
+                    </p>
+                  )}
+                </div>
+              )}
 
             </section>
 

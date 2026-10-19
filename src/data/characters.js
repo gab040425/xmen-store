@@ -77,8 +77,6 @@ const getImage = (filename) => {
   - bio: longer character description
   - abilities: list of the character's powers
 */
-let characters = []
-
 export const loadCharacters = async () => {
   const response = await fetch("http://localhost:3000/api/characters")
 
@@ -88,9 +86,17 @@ export const loadCharacters = async () => {
 
   const data = await response.json()
 
-  characters = data
+  if (!Array.isArray(data)) {
+    throw new Error("The character API returned an invalid response.")
+  }
 
-  return characters
+  return data.map((character) => ({
+    ...character,
+    accentSecondary: character.accentSecondary ?? character.accent_secondary,
+    imagePosition: character.imagePosition ?? character.image_position,
+    aliases: Array.isArray(character.aliases) ? character.aliases : [],
+    abilities: Array.isArray(character.abilities) ? character.abilities : [],
+  }))
 }
 
 /*
@@ -104,4 +110,3 @@ export const loadCharacters = async () => {
     getImage → used when a component needs an image URL
 */
 export { getImage }
-export default characters

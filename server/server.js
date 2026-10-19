@@ -8,6 +8,10 @@ import "dotenv/config";
 
 const app = express()
 const db = new Database("server/xmen-shop.db")
+db.pragma("foreign_keys = ON")
+if (db.pragma("foreign_keys", { simple: true }) !== 1) {
+  throw new Error("SQLite foreign-key enforcement could not be enabled.")
+}
 
 db.prepare(`
   CREATE TABLE IF NOT EXISTS users (
@@ -88,6 +92,46 @@ db.prepare(`
 `).run()
 
 db.prepare(`
+  CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY,
+    character_id TEXT NOT NULL,
+    product_type TEXT NOT NULL CHECK (
+      product_type IN ('funko_pop', 'mini_figurine', 'scale_1_6')
+    ),
+    name TEXT NOT NULL,
+    description TEXT,
+    price_cents INTEGER NOT NULL CHECK (
+      typeof(price_cents) = 'integer' AND price_cents >= 0
+    ),
+    stock_quantity INTEGER NOT NULL CHECK (
+      typeof(stock_quantity) = 'integer' AND stock_quantity >= 0
+    ),
+    image_url TEXT NOT NULL CHECK (length(image_url) BETWEEN 1 AND 2048),
+    is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    FOREIGN KEY (character_id) REFERENCES characters(id) ON DELETE RESTRICT
+  )
+`).run()
+
+db.prepare(`
+  CREATE INDEX IF NOT EXISTS idx_products_character_active_type
+  ON products (character_id, is_active, product_type)
+`).run()
+
+db.prepare(`
+  CREATE TRIGGER IF NOT EXISTS products_set_updated_at
+  AFTER UPDATE ON products
+  FOR EACH ROW
+  WHEN NEW.updated_at = OLD.updated_at
+  BEGIN
+    UPDATE products
+    SET updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+    WHERE id = NEW.id;
+  END
+`).run()
+
+db.prepare(`
   CREATE TABLE IF NOT EXISTS abilities (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     character_id TEXT NOT NULL,
@@ -126,7 +170,11 @@ app.get("/api/orders", (req, res) => {
 })
 
 app.use(cors({
-  origin: "http://localhost:5174",
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175"
+  ],
   credentials: true
 }))
 
@@ -139,6 +187,19 @@ app.use(session({
 app.use(express.json())
 
 const PORT = 3000
+
+const isValidProductImageUrl = (value) => {
+  if (typeof value !== "string" || value.length === 0 || value.length > 2048) {
+    return false
+  }
+
+  try {
+    const url = new URL(value)
+    return ["http:", "https:"].includes(url.protocol) && Boolean(url.hostname)
+  } catch {
+    return false
+  }
+}
 
 app.post("/api/register", async (req, res) => {
     const { name, email, password } = req.body
@@ -422,32 +483,48 @@ app.get("/api/characters", (req, res) => {
     res.json(result)
 })
 
-app.get("/api/characters", (req, res) => {
-    const characters = db.prepare(`
-        SELECT *
-        FROM characters
-        ORDER BY popularity DESC
+app.get("/api/products", (req, res) => {
+  const { characterId } = req.query
+  let products
+
+  if (characterId !== undefined) {
+    if (
+      typeof characterId !== "string" ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(characterId)
+    ) {
+      return res.status(400).json({ message: "Invalid characterId." })
+    }
+
+    const characterExists = db.prepare(
+      "SELECT 1 FROM characters WHERE id = ?"
+    ).get(characterId)
+
+    if (!characterExists) {
+      return res.status(404).json({ message: "Character not found." })
+    }
+
+    products = db.prepare(`
+      SELECT id, character_id, product_type, name, description, price_cents,
+             stock_quantity, image_url, is_active, created_at, updated_at
+      FROM products
+      WHERE is_active = 1 AND character_id = ?
+      ORDER BY product_type, name COLLATE NOCASE, id
+    `).all(characterId)
+  } else {
+    products = db.prepare(`
+      SELECT id, character_id, product_type, name, description, price_cents,
+             stock_quantity, image_url, is_active, created_at, updated_at
+      FROM products
+      WHERE is_active = 1
+      ORDER BY character_id, product_type, name COLLATE NOCASE, id
     `).all()
+  }
 
-    const getAliases = db.prepare(`
-        SELECT alias
-        FROM character_aliases
-        WHERE character_id = ?
-    `)
+  if (products.some(product => !isValidProductImageUrl(product.image_url))) {
+    return res.status(500).json({ message: "A product has an invalid image URL." })
+  }
 
-    const getAbilities = db.prepare(`
-        SELECT id, name, description
-        FROM abilities
-        WHERE character_id = ?
-    `)
-
-    const result = characters.map(character => ({
-        ...character,
-        aliases: getAliases.all(character.id).map(row => row.alias),
-        abilities: getAbilities.all(character.id)
-    }))
-
-    res.json(result)
+  res.json(products)
 })
 
 app.listen(PORT, () => {

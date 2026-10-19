@@ -24,7 +24,7 @@ import {
 } from "react-router-dom"
 import { useLayoutEffect, useEffect, useState } from "react"
 
-import characters, { getImage } from './data/characters'
+import { getImage, loadCharacters } from './data/characters'
 import CharacterPage from "./pages/CharacterPage"
 import SearchResults from "./pages/SearchResults"
 import LoginPage from "./pages/LoginPage"
@@ -55,7 +55,7 @@ import ContactBar from "./components/ContactBar"
    characters.js without manually creating a new card here.
 */
 
-function HomePage() {
+function HomePage({ characters, charactersLoading, charactersError }) {
   return (
     <main>
       <section className="hero-section">
@@ -84,7 +84,11 @@ function HomePage() {
           <h2>Featured Mutants</h2>
         </div>
 
-        <div className="character-grid">
+        {charactersLoading ? (
+          <p role="status">Loading characters…</p>
+        ) : charactersError ? (
+          <p role="alert">{charactersError}</p>
+        ) : <div className="character-grid">
           {characters.map((character) => (
             <Link
               to={`/characters/${character.id}`}
@@ -106,7 +110,7 @@ function HomePage() {
               <span>View Character →</span>
             </Link>
           ))}
-        </div>
+        </div>}
       </section>
 
       <ContactBar />
@@ -157,6 +161,20 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [currentUser, setCurrentUser] = useState(null)
+  const [characters, setCharacters] = useState([])
+  const [charactersLoading, setCharactersLoading] = useState(true)
+  const [charactersError, setCharactersError] = useState("")
+
+  useEffect(() => {
+    let isCurrent = true
+    loadCharacters()
+      .then(data => { if (isCurrent) setCharacters(data) })
+      .catch(() => {
+        if (isCurrent) setCharactersError("Unable to load characters. Please check that the shop server is running and try again.")
+      })
+      .finally(() => { if (isCurrent) setCharactersLoading(false) })
+    return () => { isCurrent = false }
+  }, [])
 
   useEffect(() => {
     fetch("http://localhost:3000/api/me", {
@@ -197,6 +215,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar
+        characters={characters}
         isLoggedIn={isLoggedIn}
         currentUser={currentUser}
         setIsLoggedIn={setIsLoggedIn}
@@ -207,12 +226,12 @@ function App() {
 
       <Routes>
         {/* Homepage */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<HomePage characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} />} />
 
         {/* Search results page */}
         <Route
           path="/search"
-          element={<SearchResults />}
+          element={<SearchResults characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} />}
         />
 
         {/* Login Page */}
@@ -254,7 +273,7 @@ function App() {
         <Route path="/orders" element={<OrdersPage />} />
 
         {/* Favourites Page */}
-        <Route path="/favourites" element={<FavouritesPage />} />
+        <Route path="/favourites" element={<FavouritesPage characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} />} />
 
         {/* Cart Page */}
         <Route path="/cart" element={<CartPage />} />
@@ -263,7 +282,7 @@ function App() {
         {/* :id is a dynamic URL parameter */}
         <Route
           path="/characters/:id"
-          element={<CharacterPage />}
+          element={<CharacterPage characters={characters} charactersLoading={charactersLoading} charactersError={charactersError} />}
         />
       </Routes>
     </BrowserRouter>

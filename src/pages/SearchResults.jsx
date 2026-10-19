@@ -13,11 +13,11 @@
 */
 
 import { useSearchParams, Link } from "react-router-dom"
-import characters, { getImage } from "../data/characters"
+import { getImage } from "../data/characters"
 import ContactBar from "../components/ContactBar"
 import "./SearchResults.css"
 
-function SearchResults() {
+function SearchResults({ characters, charactersLoading, charactersError }) {
 
   /* =========================
      READ SEARCH TERM
@@ -144,7 +144,7 @@ function SearchResults() {
             Otherwise, display the no-results message.
         */}
 
-        {results.length > 0 ? (
+        {charactersLoading ? <p role="status">Loading characters…</p> : charactersError ? <p role="alert">{charactersError}</p> : results.length > 0 ? (
 
           <div className="character-grid">
 
